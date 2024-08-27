@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tencentad/marketing-api-go-sdk/pkg/ads/v3"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -18,7 +17,6 @@ const instrumName = "github.com/tencentad/marketing-api-go-sdk"
 
 // OtelMiddleware ...
 type OtelMiddleware struct {
-	tads          *ads.SDKClient
 	traceProvider trace.TracerProvider
 	tracer        trace.Tracer //nolint:structcheck
 	meterProvider metric.MeterProvider
@@ -28,17 +26,15 @@ type OtelMiddleware struct {
 	attrs         []attribute.KeyValue
 }
 
-func NewOtelMiddleware(tads *ads.SDKClient, namespace string) *OtelMiddleware {
+func NewOtelMiddleware(namespace string) *OtelMiddleware {
 	if namespace == "" {
 		namespace = instrumName
 	}
 	ret := &OtelMiddleware{
-		tads:          tads,
 		traceProvider: otel.GetTracerProvider(),
 		meterProvider: otel.GetMeterProvider(),
 		attrs: []attribute.KeyValue{
 			attribute.String("sdk", "tads"),
-			attribute.String("version", tads.GetVersion()),
 		},
 	}
 	ret.tracer = ret.traceProvider.Tracer(namespace)
