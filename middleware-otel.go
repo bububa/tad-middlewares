@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
+	semconv10 "go.opentelemetry.io/otel/semconv/v1.10.0"
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -63,6 +64,7 @@ func (o *OtelMiddleware) Handle(
 ) (rsp *http.Response, err error) {
 	startTime := time.Now()
 	attrs := append(o.attrs,
+		semconv10.HTTPURLKey.String(req.URL.String()),
 		semconv.URLFull(req.URL.String()),
 		semconv.HTTPRequestMethodKey.String(req.Method),
 		semconv.URLPath(req.URL.Path),
