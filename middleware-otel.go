@@ -84,7 +84,7 @@ func (o *OtelMiddleware) Handle(
 		o.histogram.Record(ctx, time.Since(startTime).Microseconds(), metric.WithAttributes(o.attrs...))
 	}
 	if o.counter != nil {
-		counterAttrs := append(o.attrs, semconv.URLPath(req.URL.Path))
+		counterAttrs := append(o.attrs, semconv10.HTTPTargetKey.String(req.URL.Path))
 		o.counter.Add(ctx, 1, metric.WithAttributes(counterAttrs...))
 	}
 	if !span.IsRecording() {
